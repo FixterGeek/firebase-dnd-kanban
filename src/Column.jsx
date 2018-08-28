@@ -2,7 +2,7 @@ import React from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import {BoxForm} from './BoxForm'
 import {BoxComponent} from './BoxComponent'
-import {removeItem} from './services/realtime'
+// import {removeItem} from './services/realtime'
 
 
 export class Column extends React.Component {
@@ -19,7 +19,7 @@ export class Column extends React.Component {
         this.setState({open:false})
     }
     removeItem = (itemId) => {
-        removeItem(this.props._id, itemId)
+        // removeItem(this.props._id, itemId)
     }
 
 

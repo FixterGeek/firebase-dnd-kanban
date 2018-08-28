@@ -5,8 +5,8 @@ import {BoxForm} from './BoxForm'
 import {BoxComponent} from './BoxComponent'
 import { Droppable, DragDropContext } from 'react-beautiful-dnd'
 import {Column} from './Column'
-import {updateColumns} from './services/realtime'
-import firebase from './services/firebase'
+// import {updateColumns} from './services/realtime'
+// import firebase from './services/firebase'
 
 class App extends Component {
 
@@ -15,62 +15,62 @@ class App extends Component {
     dos:false,
     tres:false,
     columns:{
-      // columnaUno:{
-      //   _id:"columnaUno",
-      //   title:"ToDo",
-      //   todos:{
-      //     "uno":{
-      //       _id:"uno",
-      //       title:"Mijo"
-      //     },
-      //     "dos":{
-      //       _id:"dos",
-      //       title:"Morro"
-      //     }
-      //   },
-      //   order:["dos","uno"]
-      // },
-      // columnaDos:{
-      //   _id:"columnaDos",
-      //   title:"Doing",
-      //   todos:{
-      //     "tres":{
-      //       _id:"tres",
-      //       title:"Mijo"
-      //     },
-      //     "cuatro":{
-      //       _id:"cuatro",
-      //       title:"Morro"
-      //     }
-      //   },
-      //   order:["cuatro","tres"]
-      // },
-      // columnaTres:{
-      //   _id:"columnaTres",
-      //   title:"Done",
-      //   todos:{},
-      //   order:[]
-      // }
+      columnaUno:{
+        _id:"columnaUno",
+        title:"ToDo",
+        todos:{
+          "uno":{
+            _id:"uno",
+            title:"Mijo"
+          },
+          "dos":{
+            _id:"dos",
+            title:"Morro"
+          }
+        },
+        order:["dos","uno"]
+      },
+      columnaDos:{
+        _id:"columnaDos",
+        title:"Doing",
+        todos:{
+          "tres":{
+            _id:"tres",
+            title:"Mijo"
+          },
+          "cuatro":{
+            _id:"cuatro",
+            title:"Morro"
+          }
+        },
+        order:["cuatro","tres"]
+      },
+      columnaTres:{
+        _id:"columnaTres",
+        title:"Done",
+        todos:{},
+        order:[]
+      }
 
     }
   }
 
   componentDidMount(){
 
-    const {columns} = this.state
-    firebase.database().ref('meetup').child('columns')
-      .on('child_added', snap=>{
-        const key = snap.key
-        columns[key] = snap.val()
-        this.setState({columns})
-      })
+    // const {columns} = this.state
+    // firebase.database().ref('meetup').child('columns')
+    //   .on('child_added', snap=>{
+    //     const key = snap.key
+    //     columns[key] = snap.val()
+    //     this.setState({columns})
+    //   })
 
-      firebase.database().ref('meetup').child('columns')
-      .on('child_changed', snap=>{
-        const key = snap.key
-        columns[key] = snap.val()
-        this.setState({columns})
-      })
+    //   firebase.database().ref('meetup').child('columns')
+    //   .on('child_changed', snap=>{
+    //     const key = snap.key
+    //     columns[key] = snap.val()
+    //     this.setState({columns})
+    //   })
 
 
   }
@@ -99,7 +99,7 @@ class App extends Component {
     columns[destinationId].order.splice(destinationIndex,0,itemId)
     // 3.- setState
     this.setState({columns})
-    updateColumns(columns)
+    //updateColumns(columns)
   }
 
   render() {

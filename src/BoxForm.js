@@ -1,5 +1,7 @@
 import React from 'react'
-import {addItem} from './services/realtime'
+// import {addItem} from './services/realtime'
+
+const addItem = () => {}
 
 let text;
 
