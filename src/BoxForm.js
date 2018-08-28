@@ -1,9 +1,9 @@
 import React from 'react'
-import {addItem} from './services/realtime'
+//import {addItem} from './services/realtime'
 
 let text;
 
-export const BoxForm=({columnId, open, closeForm})=>{
+export const BoxForm=({addItem, columnId, open, closeForm})=>{
     if(!open) return null
     return <div>
         <textarea ref={textarea=>text=textarea} className="textarea" placeholder="Debo pasear a mi perra"></textarea>

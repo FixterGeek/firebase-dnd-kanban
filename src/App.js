@@ -5,8 +5,9 @@ import {BoxForm} from './BoxForm'
 import {BoxComponent} from './BoxComponent'
 import { Droppable, DragDropContext } from 'react-beautiful-dnd'
 import {Column} from './Column'
-import {updateColumns} from './services/realtime'
+import {getColumns, columnsRef, todosRef} from './services/firestore'
 import firebase from './services/firebase'
+import { updateColumns } from './services/realtime';
 
 class App extends Component {
 
@@ -56,23 +57,92 @@ class App extends Component {
   }
 
   componentDidMount(){
-
     const {columns} = this.state
-    firebase.database().ref('meetup').child('columns')
-      .on('child_added', snap=>{
-        const key = snap.key
-        columns[key] = snap.val()
+    columnsRef.get()
+    .then(snap=>{
+      snap.forEach(doc=>{
+        const column = doc.data()
+        if(column.order){
+          this.getTodos(column)
+        }
+        columns[doc.id] = column
         this.setState({columns})
       })
+     
+      //console.log(columns)
 
-      firebase.database().ref('meetup').child('columns')
-      .on('child_changed', snap=>{
-        const key = snap.key
-        columns[key] = snap.val()
+    })
+
+
+
+    // getColumns()
+    // .then(columns=>{
+    //   this.setState({columns})
+    // })
+
+    // const {columns} = this.state
+    // firebase.database().ref('meetup').child('columns')
+    //   .on('child_added', snap=>{
+    //     const key = snap.key
+    //     columns[key] = snap.val()
+    //     this.setState({columns})
+    //   })
+
+    //   firebase.database().ref('meetup').child('columns')
+    //   .on('child_changed', snap=>{
+    //     const key = snap.key
+    //     columns[key] = snap.val()
+    //     this.setState({columns})
+    //   })
+
+
+  }
+
+  getTodos = (column) => {
+    const {columns} = this.state
+    column.todos = {}
+    column.order.forEach(todoId=>{
+      todosRef.doc(todoId).get()
+      .then(doc=>{
+        //console.log(doc.data())
+        column.todos[doc.id] = doc.data()
+        columns[column._id] = column
         this.setState({columns})
       })
+    })
+    
+  }
 
+  saveChanges = (columns) => {
+    for(let k in columns){
+      //delete columns[k].todos
+      //console.log(columnas[k])
+      columnsRef.doc(k).set(columns[k])
+    }
+  }
 
+  removeItem = (columnId, itemId) => {
+    const {columns} = this.state
+    delete columns[columnId].todos[itemId]
+    columns[columnId].order.splice(itemId,1)
+    this.setState({columns})
+    this.saveChanges(columns)
+  }
+
+  addItem = (title, columnId ) => {
+    const {columns} = this.state
+    const todo = {
+      _id: firebase.firestore().collection('todos').doc().id,
+      title,
+      column:columnId
+    }
+    //saving
+    todosRef.doc(todo._id).set(todo)
+    //
+    columns[columnId].todos[todo._id] = todo
+    columns[columnId].order.splice(0,0,todo._id)
+    this.setState({columns})
+    this.saveChanges(columns)
   }
 
 
@@ -99,12 +169,13 @@ class App extends Component {
     columns[destinationId].order.splice(destinationIndex,0,itemId)
     // 3.- setState
     this.setState({columns})
-    updateColumns(columns)
+    //updateColumns(columns)
+    this.saveChanges(columns)
   }
 
   render() {
-    const {uno, dos, tres, columns} = this.state
-    const columnsOrder = Object.keys(columns) 
+    const {columns} = this.state
+    const columnsOrder = Object.keys(columns)
     return (
       <DragDropContext
         onDragEnd={this.onDragEnd}
@@ -113,7 +184,10 @@ class App extends Component {
                 
         
         <article className="hero-head columns">
-          {columnsOrder.map((id,index)=><Column key={index} {...columns[id]} />)}
+          {columnsOrder.map((id,index)=>{
+            //console.log(columns[id])
+            return <Column addItem={this.addItem} removeItem={this.removeItem} key={index} {...columns[id]} column={columns[id]} /> 
+          })}
           </article>
         
       

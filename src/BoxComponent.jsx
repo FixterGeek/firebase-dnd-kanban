@@ -1,7 +1,7 @@
 import React from 'react'
 import {Draggable} from 'react-beautiful-dnd'
 
-export const BoxComponent = ({removeItem, index,_id=0,title="Comer pandita"}) => {
+export const BoxComponent = ({removeItem, index, _id, title="Comer pandita"}) => {
     return (
 <Draggable index={index} draggableId={_id}>
 {provided=>

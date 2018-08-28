@@ -2,7 +2,9 @@ import React from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import {BoxForm} from './BoxForm'
 import {BoxComponent} from './BoxComponent'
-import {removeItem} from './services/realtime'
+//import {removeItem} from './services/realtime'
+//import {removeItem} from './services/firestore'
+
 
 
 export class Column extends React.Component {
@@ -19,7 +21,7 @@ export class Column extends React.Component {
         this.setState({open:false})
     }
     removeItem = (itemId) => {
-        removeItem(this.props._id, itemId)
+        this.props.removeItem(this.props._id, itemId)
     }
 
 
@@ -27,7 +29,7 @@ export class Column extends React.Component {
 
     render(){
         const { open } = this.state
-        const {title, _id, todos={}, order=[]} = this.props
+        let {title, _id, todos={}, order=[]} = this.props
     return (
         <div className="column">
 
@@ -36,7 +38,7 @@ export class Column extends React.Component {
           <h2 className="card-header-title">{title}</h2>
           <span onClick={this.openForm} style={{fontSize:30}} className="card-header-icon">+</span>
         </div>
-        <BoxForm columnId={_id} closeForm={this.closeForm} open={open}/>
+        <BoxForm addItem={this.props.addItem} columnId={_id} closeForm={this.closeForm} open={open}/>
         <Droppable 
           droppableId={_id}
           index={"uno"}
